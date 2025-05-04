@@ -1,0 +1,27 @@
+body{
+    margin: 0px;
+    padding:0px;
+
+}
+ul{margin:0px;
+    padding: 0px px;
+    list-style: none;
+    list-style-type: none;
+    white-space: none;
+
+}
+ol {
+    margin:1px;
+    padding: 270px 20px;
+
+}
+h1, h2, h3, h4 , h5, h6{font-weight: bold;}
+
+.flex{display: flex;}
+.fixed{position: fixed;}
+.noul{text-decoration: none;}
+.label{display: block;}
+.c333{color : #1a026e}
+.s15{font-size: 15px;}
+.s24{font-size: 25px;}
+.ico{}
