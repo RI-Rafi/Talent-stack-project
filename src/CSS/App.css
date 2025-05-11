@@ -3,32 +3,83 @@
   top:0px;
   left:0px;
   bottom:0px;
-
+  background-color: rgb(97, 124, 147);
 }
-
+.sidebar .position{
+  margin: -5px 0px 0px 0px;}
 .sidebar.logo{
-  padding: 20px 25px;
-}
+  padding: 21px 25px;}
 .sidebar .logo img{
   height: 187px;
 }
 .sidebar .nav{
-  padding: 10px 35px;
+  margin: -5px;
+  padding: 15px 30px;
 }
-.sidebar .nav li{}
 .sidebar .nav li a{
-  background-color: rgb(118, 194, 194);
+  margin-top: 20px;
+  background-color: rgb(125, 203, 203);
   align-items: center;
-  line-height: 2;
-  padding: 0px 22px;
-  border-radius: 40px;
+  line-height: 5px;
+  padding: 5px 30px;
+  border-radius: 80px;
 }
-.sidebar .nav li a .ico{
-  margin-right: 10px;
+.sidebar .icon{
+  margin: 5px;
+  font-size: 30px;
 }
-.sidebar .nav li a .label{}
+.sidebar .nav li a .label{
+  font-size: large;
+  
+}
 .sidebar .nav li a.on { 
-  border-left: 2px  rgb(60, 112, 136);
+  margin:20px;
+  border-left: 2px  rgb(59, 137, 174);
   color:aquamarine;
   line-height: 1;
+}
+.sidebar .stats{
+  margin:2px 0px 0px 0px;
+  flex-direction: column;
+  
+}
+.sidebar .stats .stats-box{
+  
+}
+.sidebar .stats .stats-box .iconn{
+  margin: 2px;
+  font-size: 25px;
+  
+}
+
+.sidebar .stats .stats-box .label{}
+.sidebar .stats .stats-box .icon-colors{
+  color: brown;
+}
+.sidebar .me{
+  padding: 20px 20px;
+}
+.sidebar .photo{
+  width: 30%;
+  height: 30%;
+  border-radius: 2px;
+  margin-right: 0px;
+}
+.sidebar .photo img{
+  height: 100px;
+  width: 100px;
+  flex-direction: center;
+  border-radius: 50%;
+
+}
+.sidebar .me .label{}
+.box{
+  margin: 2px;
+  padding: 1px 0px -1px -10px;
+  border-radius: 10px;
+}
+.box .button{
+  margin: -2px;
+  border-radius: 10px;
+  border-radius: 10px;
 }

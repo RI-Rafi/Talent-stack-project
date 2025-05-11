@@ -1,0 +1,8 @@
+.screen{
+    top:0px;
+    left:250px;
+    bottom:0px;
+    background-color: rgb(97, 124, 147);
+  }
+.screen .border{    margin-top:100px;
+    padding: 1080px 20px;}

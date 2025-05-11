@@ -1,8 +1,7 @@
 function Footer(){
     return(
-        <footer>
+        <footer >
             <p>&copy; {new Date().getMonth()}_{new Date().getUTCHours()}_{new Date().getFullYear()}</p>
-
         </footer>
     )
 

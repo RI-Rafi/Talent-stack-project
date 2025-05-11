@@ -5,13 +5,14 @@ import Headerr from './screens/header'
 import Sidebar from './screens/sidebar'
 import "./CSS/fonts.css"
 import "./CSS/props.css"
+import Courses from './screens/courses'
 function App() {
   return (
-    <div className='App flex'>
-
-     
+    <div className='App flex'>     
     <Sidebar/>
-    </div>
+    <Courses/>
+    {/* <Footer className='s15 position'/> */}
+     </div>
 
 
 
