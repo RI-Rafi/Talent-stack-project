@@ -18,4 +18,4 @@ function Ranking() {
         </div>
     );
 }
- export default Rankingddddddd;
+ export default Ranking;
