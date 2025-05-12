@@ -1,35 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { initializeApp } from "firebase/app";
-import{
-    getAuth,
-    getStorage,
-    getFirestore,
-    collection,
-    doc,
-    setDoc,
-    getDocs,
-    updateDoc,
-} from "firebase/firestore";
 
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAbVGsGonMb49AVu8NLS-Ao_2ER475yqRU",
-  authDomain: "talent-stack-3a2ab.firebaseapp.com",
-  projectId: "talent-stack-3a2ab",
-  storageBucket: "talent-stack-3a2ab.firebasestorage.app",
-  messagingSenderId: "728976899951",
-  appId: "1:728976899951:web:aa8a9787e26bbdd274f29a",
-  measurementId: "G-34T4G7TBC4"
-};
-
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
 
 const Learnings = () => {
     const [courses, setCourses] = useState([]);
