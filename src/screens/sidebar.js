@@ -4,15 +4,14 @@ import Ranking from './ranking';
 import Footer from '../Footer';
 
 function Sidebar( ){
-    const [nav, setNav] = useState([
-        {label: "My Courses",slug:"https://www.youtube.com/watch?v=hV55tlzDvDw", icon: ' icon-home'},
-        {label: "Learnings", slug:"https://www.youtube.com/channel/UCtFRv9O2AHqOZjjynzrv-xg", icon: ' icon-books'},
-        {label: "My Growth", slug:"/", icon: ' icon-arrow-up-right1'},
-        {label: "Ranking", slug:"/", icon: ' icon-globe'},
-        {label: "Friends", slug:"https://www.reddit.com/r/nofriends/", icon: ' icon-user-add'},
-        {label: "Posts", slug:"/", icon: ' icon-envelope'}
-        
-    ])
+const [nav, setNav] = useState([
+  { label: "My Courses", slug: "/courses", icon: " icon-home" },
+  { label: "Learnings", slug: "/learning", icon: " icon-books" },
+  { label: "My Growth", slug: "/growth", icon: " icon-arrow-up-right1" },
+  { label: "Ranking", slug: "/ranking", icon: " icon-globe" },
+  { label: "Friends", slug: "/friends", icon: " icon-user-add" },
+  { label: "Posts", slug: "/posts", icon: " icon-envelope" }
+]);
     
     const [currentPage, setCurrentPage] = useState("/")
     var navigation = [];
