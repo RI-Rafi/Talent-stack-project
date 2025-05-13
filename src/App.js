@@ -6,11 +6,13 @@ import Sidebar from './screens/sidebar'
 import "./CSS/fonts.css"
 import "./CSS/props.css"
 import Courses from './screens/courses'
+import Auth from './backend/auth';
 function App() {
   return (
     <div className='App flex'>     
     <Sidebar/>
     <Courses/>
+    <Auth/>  
     {/* <Footer className='s15 position'/> */}
      </div>
 
