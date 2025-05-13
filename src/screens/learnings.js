@@ -1,65 +1,110 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { auth, db } from "./firebase";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore";
 
+const Learning = () => {
+  const [courses, setCourses] = useState([]);
+  const [completionStatus, setCompletionStatus] = useState({});
 
-const Learnings = () => {
-    const [courses, setCourses] = useState([]);
-    const [completionRate, setCompletionRate] = useState(0);
+  const fetchCourses = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
 
-    // Fetch courses from Firestore
-    useEffect(() => {
-        const fetchCourses = async () => {
-            const querySnapshot = await getDocs(collection(db, "courses"));
-            const coursesData = [];
-            querySnapshot.forEach((doc) => {
-                coursesData.push({ id: doc.id, ...doc.data() });
-            });
-            setCourses(coursesData);
-            calculateCompletionRate(coursesData);
-        };
+    const userCoursesRef = collection(db, "users", user.uid, "courses");
+    const courseSnapshot = await getDocs(userCoursesRef);
+    const coursesData = courseSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setCourses(coursesData);
 
-        fetchCourses();
-    }, []);
+    // Listen to completion status in real time
+    const completionRef = collection(db, "users", user.uid, "completion");
+    onSnapshot(completionRef, snapshot => {
+      const completed = {};
+      snapshot.docs.forEach(doc => {
+        completed[doc.id] = doc.data().completed;
+      });
+      setCompletionStatus(completed);
+    });
+  };
 
-    // Calculate completion rate
-    const calculateCompletionRate = (courses) => {
-        const completedCourses = courses.filter((course) => course.completed).length;
-        const totalCourses = courses.length;
-        const rate = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0;
-        setCompletionRate(rate.toFixed(2));
-    };
+  const markAsCompleted = async (courseId) => {
+    const user = auth.currentUser;
+    if (!user) return;
 
-    // Toggle course completion
-    const toggleCompletion = async (courseId, currentStatus) => {
-        const courseRef = doc(db, "courses", courseId);
-        await updateDoc(courseRef, { completed: !currentStatus });
+    const completionRef = doc(db, "users", user.uid, "completion", courseId);
+    await setDoc(completionRef, { completed: true });
+  };
 
-        const updatedCourses = courses.map((course) =>
-            course.id === courseId ? { ...course, completed: !currentStatus } : course
-        );
-        setCourses(updatedCourses);
-        calculateCompletionRate(updatedCourses);
-    };
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
-    return (
-        <div style={{ marginLeft: "300px" }}>
-            <h1>Course Tracker</h1>
-            <ul>
-                {courses.map((course) => (
-                    <li key={course.id}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={course.completed}
-                                onChange={() => toggleCompletion(course.id, course.completed)}
-                            />
-                            {course.name}
-                        </label>
-                    </li>
-                ))}
-            </ul>
-            <h2>Completion Rate: {completionRate}%</h2>
+  return (
+    <div className="screen border" style={{ marginLeft: "270px" }}>
+      <h1 className="courses-title">My Learning Courses</h1>
+      {courses.length === 0 ? (
+        <p>You haven’t added any courses yet.</p>
+      ) : (
+        <div className="courses-grid">
+          {courses.map(course => (
+            <div className="course-card" key={course.id}>
+              <h2 className="course-title">{course.title}</h2>
+              <a
+                className="course-link"
+                href={course.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Go to Course
+              </a>
+              <div style={{ marginTop: "10px" }}>
+                {completionStatus[course.id] ? (
+                  <span style={{ color: "green", fontWeight: "bold" }}>✅ Completed</span>
+                ) : (
+                  <button
+                    className="course-add-button"
+                    onClick={() => markAsCompleted(course.id)}
+                  >
+                    Mark Complete
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
-export default Learnings;
+export default Learning;
+import { db, auth } from './firebase';
+import {
+  collection,
+  doc,
+  setDoc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore';
+
+export async function addCourse(title, url) {
+  const user = auth.currentUser;
+  if (!user) throw new Error('User not logged in');
+
+  const courseRef = doc(collection(db, 'users', user.uid, 'courses'));
+  await setDoc(courseRef, {
+    title,
+    url,
+    addedAt: serverTimestamp(),
+  });
+
+  return courseRef.id;
+}
