@@ -19,7 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Set up Firestore and Analytics
-const db = getFirestore(app);
+export const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
 // Export necessary Firebase features

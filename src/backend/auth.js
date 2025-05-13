@@ -1,51 +1,87 @@
-import { auth, googleProvider } from '../config/firebase';
-import { createUserWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
-import { useState } from 'react';
+// src/backend/auth.js
+import React, { useState } from "react";
+import { auth, db } from "./firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export const Auth = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
+  const navigate = useNavigate();
 
-  const signIn = async () => {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // Handle registration or login
+  const handleAuth = async (e) => {
+    e.preventDefault();
 
-  const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+      if (isLogin) {
+        // Log in the user
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        localStorage.setItem("userEmail", user.email);
+        navigate("/main");
+      } else {
+        // Register the user
+        if (!name.trim()) {
+          alert("Name is required for registration.");
+          return;
+        }
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error(err);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        localStorage.setItem("userEmail", user.email);
+        
+        // Add user to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          name: name.trim(),
+          coursesCompleted: 0,
+          points: 0,
+          createdAt: new Date().toISOString()
+        });
+
+        navigate("/main");
+      }
+    } catch (error) {
+      alert("Authentication error: " + error.message);
     }
   };
 
   return (
-    <div>
+    <div style={{ margin: "100px auto", textAlign: "center", width: "300px", border: "1px solid #ccc", padding: "20px", borderRadius: "10px" }}>
+      <h2>{isLogin ? "Login" : "Register"}</h2>
+      {!isLogin && (
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          style={{ marginBottom: "10px", width: "100%", padding: "10px" }}
+        />
+      )}
       <input
-        placeholder="Email..."
+        type="email"
+        placeholder="Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
+        style={{ marginBottom: "10px", width: "100%", padding: "10px" }}
       />
       <input
-        placeholder="Password..."
         type="password"
+        placeholder="Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
+        style={{ marginBottom: "10px", width: "100%", padding: "10px" }}
       />
-      <button onClick={signIn}> Sign In</button>
-
-      <button onClick={signInWithGoogle}> Sign In With Google</button>
-
-      <button onClick={logout}> Logout </button>
+      <button onClick={handleAuth} style={{ width: "100%", padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px" }}>
+        {isLogin ? "Login" : "Register"}
+      </button>
+      <p style={{ marginTop: "10px", cursor: "pointer" }} onClick={() => setIsLogin(!isLogin)}>
+        {isLogin ? "Create an account" : "Already have an account? Login"}
+      </p>
     </div>
   );
 };
