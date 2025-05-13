@@ -37,13 +37,13 @@ export const Auth = () => {
         // Add user to Firestore
         await setDoc(doc(db, "users", user.uid), {
           email: user.email,
-          name: name,
+          name: name.trim(),
           coursesCompleted: 0,
           points: 0,
-          courses: [] // Store the courses added by the user here
+          createdAt: new Date().toISOString()
         });
 
-        navigate("/main");
+        navigate("/sidebar");
       }
     } catch (error) {
       alert("Authentication error: " + error.message);

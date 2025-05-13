@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "./firebase";
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  setDoc,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc, onSnapshot, collection } from "firebase/firestore";
+import { Link } from "react-router-dom";
+// Predefined courses from courses.js for reference
+const predefinedCourses = [
+  { title: "React for Beginners", description: "Learn the basics of React from scratch.", url: "https://www.freecodecamp.org/" },
+  { title: "JavaScript Essentials", description: "Master JavaScript with this comprehensive guide.", url: "https://www.codecademy.com/" },
+  { title: "HTML & CSS Fundamentals", description: "Build beautiful websites with HTML and CSS.", url: "https://www.w3schools.com/" },
+  { title: "Python Programming", description: "Get started with Python programming.", url: "https://www.coursera.org/" },
+  { title: "Data Structures & Algorithms", description: "Learn DSA to ace coding interviews.", url: "https://www.geeksforgeeks.org/" },
+];
 
 const Learning = () => {
   const [courses, setCourses] = useState([]);
@@ -16,13 +19,21 @@ const Learning = () => {
     const user = auth.currentUser;
     if (!user) return;
 
-    const userCoursesRef = collection(db, "users", user.uid, "courses");
-    const courseSnapshot = await getDocs(userCoursesRef);
-    const coursesData = courseSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setCourses(coursesData);
+    // Fetch the user's courses array from users/{user.uid}
+    const userDocRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+    let userCourses = [];
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      userCourses = userData.courses || [];
+    }
+
+    // Map course titles to full course objects using predefinedCourses
+    const enrichedCourses = userCourses.map((title, index) => {
+      const course = predefinedCourses.find(c => c.title === title) || { title, url: "#", description: "No description available" };
+      return { id: `course-${index}`, title: course.title, url: course.url, description: course.description };
+    });
+    setCourses(enrichedCourses);
 
     // Listen to completion status in real time
     const completionRef = collection(db, "users", user.uid, "completion");
@@ -57,6 +68,7 @@ const Learning = () => {
           {courses.map(course => (
             <div className="course-card" key={course.id}>
               <h2 className="course-title">{course.title}</h2>
+              <p className="course-description">{course.description}</p>
               <a
                 className="course-link"
                 href={course.url}
@@ -86,25 +98,3 @@ const Learning = () => {
 };
 
 export default Learning;
-import { db, auth } from './firebase';
-import {
-  collection,
-  doc,
-  setDoc,
-  serverTimestamp,
-  updateDoc,
-} from 'firebase/firestore';
-
-export async function addCourse(title, url) {
-  const user = auth.currentUser;
-  if (!user) throw new Error('User not logged in');
-
-  const courseRef = doc(collection(db, 'users', user.uid, 'courses'));
-  await setDoc(courseRef, {
-    title,
-    url,
-    addedAt: serverTimestamp(),
-  });
-
-  return courseRef.id;
-}
