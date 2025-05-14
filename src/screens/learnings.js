@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { auth, db } from "./firebase";
+import { auth, db } from "../firebase";
 import { doc, getDoc, setDoc, onSnapshot, collection } from "firebase/firestore";
 import { Link } from "react-router-dom";
 // Predefined courses from courses.js for reference
+
 const predefinedCourses = [
   { title: "React for Beginners", description: "Learn the basics of React from scratch.", url: "https://www.freecodecamp.org/" },
   { title: "JavaScript Essentials", description: "Master JavaScript with this comprehensive guide.", url: "https://www.codecademy.com/" },
@@ -31,11 +32,14 @@ const Learning = () => {
     // Map course titles to full course objects using predefinedCourses
     const enrichedCourses = userCourses.map((title, index) => {
       const course = predefinedCourses.find(c => c.title === title) || { title, url: "#", description: "No description available" };
-      return { id: `course-${index}`, title: course.title, url: course.url, description: course.description };
+      return {
+
+        id: `course-${index}`, title: course.title, url: course.url, description: course.description };
     });
     setCourses(enrichedCourses);
 
-    // Listen to completion status in real time
+    // Listen to comple
+    // tion status in real time
     const completionRef = collection(db, "users", user.uid, "completion");
     onSnapshot(completionRef, snapshot => {
       const completed = {};
@@ -59,7 +63,9 @@ const Learning = () => {
   }, []);
 
   return (
+
     <div className="screen border" style={{ marginLeft: "270px" }}>
+
       <h1 className="courses-title">My Learning Courses</h1>
       {courses.length === 0 ? (
         <p>You haven’t added any courses yet.</p>
